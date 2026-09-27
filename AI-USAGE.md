@@ -11,13 +11,13 @@ looks exactly like what it is.
 
 At least six entries. One per real use. Every entry needs a commit link.
 
-### YYYY-MM-DD - short title
+### 2026-09-23 - Course Page Initial Build
 
-- **Tool:**
-- **What I asked for:**
-- **What it gave back:**
-- **What I kept, what I changed, and why:**
-- **Commit:** https://github.com/YOUR-USERNAME/YOUR-REPO/commit/SHA
+- **Tool:** Claude AI
+- **What I asked for:** Code the Course Page in Flutter, kept simple and minimal, using the colors, type scale, spacing, and components from my Design System v2.
+- **What it gave back:** theme.dart, a Professor model, four reusable widgets (AppSearchBar, ProfessorCard, TagBadge, AppBottomNavBar), and the CoursePage screen with hardcoded sample professor data.
+- **What I kept, what I changed, and why:** I kept everything but the AppBottomNavBar because it doesn't match what I intended. I kept those items because I'll use them as a rough draft to begin my app.
+- **Commit:** https://github.com/codewchester/RateMyProfessorHAU-Finals/commit/6895fb4
 
 ## 2. Where the AI got it wrong
 
