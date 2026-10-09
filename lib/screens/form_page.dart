@@ -26,6 +26,8 @@ class FormPage extends StatefulWidget {
 class _FormPageState extends State<FormPage> {
   final TextEditingController _professorController = TextEditingController();
   final TextEditingController _commentController = TextEditingController();
+  Professor? _selectedProfessor;
+  bool _showProfessorResults = false;
 
   String _courseCode = sampleProfessors.first.courses.isNotEmpty
       ? sampleProfessors.first.courses.first
@@ -44,6 +46,7 @@ class _FormPageState extends State<FormPage> {
     if (!_prefilled) {
       final args = ModalRoute.of(context)?.settings.arguments;
       if (args is Professor) {
+        _selectedProfessor = args;
         _professorController.text = args.name;
         if (args.courses.isNotEmpty) _courseCode = args.courses.first;
       }
@@ -65,13 +68,16 @@ class _FormPageState extends State<FormPage> {
         break;
       case AppNavDestination.home:
       case AppNavDestination.professors:
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
         break;
       case AppNavDestination.profile:
         Navigator.of(context).pushNamed('/profile');
         break;
       case AppNavDestination.review:
         Navigator.of(context).pushNamed('/reviews');
+        break;
+      case AppNavDestination.addReview:
+        // The form is already open; keep the middle button on this page.
         break;
       default:
       // Fallback action for any unhandled destination
@@ -121,6 +127,15 @@ class _FormPageState extends State<FormPage> {
     final availableCourses = {
       for (final p in sampleProfessors) ...p.courses,
     }.toList();
+    final courseOptions = _selectedProfessor?.courses.isNotEmpty == true
+        ? _selectedProfessor!.courses
+        : availableCourses;
+    final professorQuery = _professorController.text.trim().toLowerCase();
+    final matchingProfessors = sampleProfessors
+        .where((professor) =>
+            professorQuery.isEmpty ||
+            professor.name.toLowerCase().contains(professorQuery))
+        .toList();
 
     return Scaffold(
       appBar: const AppTopBar(),
@@ -162,9 +177,19 @@ class _FormPageState extends State<FormPage> {
                   const SizedBox(height: 4),
                   TextField(
                     controller: _professorController,
+                    onChanged: (_) => setState(() {
+                      _selectedProfessor = null;
+                      _showProfessorResults = true;
+                    }),
                     decoration: InputDecoration(
                       hintText: 'Search Professor',
-                      prefixIcon: const Icon(Icons.search, size: 18),
+                      prefixIcon: IconButton(
+                        tooltip: 'Show professors',
+                        icon: const Icon(Icons.search, size: 18),
+                        onPressed: () => setState(
+                          () => _showProfessorResults = !_showProfessorResults,
+                        ),
+                      ),
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.surface,
                       border: OutlineInputBorder(
@@ -173,6 +198,41 @@ class _FormPageState extends State<FormPage> {
                       ),
                     ),
                   ),
+                  if (_showProfessorResults) ...[
+                    const SizedBox(height: 4),
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 220),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black12),
+                      ),
+                      child: matchingProfessors.isEmpty
+                          ? const ListTile(title: Text('No professors found.'))
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: matchingProfessors.length,
+                              itemBuilder: (context, index) {
+                                final professor = matchingProfessors[index];
+                                return ListTile(
+                                  leading: const Icon(Icons.school_outlined),
+                                  title: Text(professor.name),
+                                  subtitle: Text(professor.courses.join(' · ')),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedProfessor = professor;
+                                      _professorController.text = professor.name;
+                                      if (professor.courses.isNotEmpty) {
+                                        _courseCode = professor.courses.first;
+                                      }
+                                      _showProfessorResults = false;
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.sm),
 
                   Row(
@@ -187,13 +247,13 @@ class _FormPageState extends State<FormPage> {
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
-                            value: availableCourses.contains(_courseCode)
+                            value: courseOptions.contains(_courseCode)
                                 ? _courseCode
-                                : availableCourses.first,
+                                : courseOptions.first,
                             dropdownColor: Colors.white,
                             icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
                             style: const TextStyle(color: Colors.white, fontSize: 13),
-                            items: availableCourses
+                            items: courseOptions
                                 .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                                 .toList(),
                             onChanged: (value) {

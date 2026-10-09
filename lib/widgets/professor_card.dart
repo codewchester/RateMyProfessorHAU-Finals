@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/professor.dart';
+import '../models/review.dart';
 import '../theme.dart';
-import 'tag_badge.dart';
+import 'star_display.dart';
 
 /// One professor result, shown in the 2-column grid on the Course Page.
 /// Takes data and a tap callback only - no setState here.
@@ -18,42 +19,77 @@ class ProfessorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final primary = Theme.of(context).colorScheme.primary;
+    // Reviews are kept newest-first in the sample data.
+    final professorReviews = sampleReviews
+        .where((review) => review.professorId == professor.id);
+    final recentReview = professorReviews.isEmpty ? null : professorReviews.first;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Card(
+        color: Colors.white,
+        elevation: 2,
+        shadowColor: Colors.black.withOpacity(0.12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: Color(0xFFE3DEDC)),
+        ),
         clipBehavior: Clip.antiAlias,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // dark header band with a circular placeholder icon + label
+            // Compact professor identity header.
             Container(
               width: double.infinity,
-              color: onSurface,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Column(
+              color: primary,
+              padding: const EdgeInsets.all(8),
+              child: Row(
                 children: [
                   const CircleAvatar(
-                    radius: 18,
+                    radius: 16,
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.person, color: Color(0xFF1A1A1A)),
+                    child: Icon(
+                      Icons.person,
+                      size: 19,
+                      color: Color(0xFF1A1A1A),
+                    ),
                   ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Professor',
-                    style: TextStyle(color: Colors.white70, fontSize: 10),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          professor.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          professor.department,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 9,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 4),
                   Text(
-                    professor.name,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    '${professor.rating.toStringAsFixed(1)}★',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFFFFD166),
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: 11,
                     ),
                   ),
                 ],
@@ -64,32 +100,84 @@ class ProfessorCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Top Tags:', style: textTheme.labelSmall),
-                  Wrap(
-                    spacing: 4,
-                    runSpacing: 4,
-                    children: professor.tags
-                        .take(3)
-                        .map((tag) => TagBadge(label: tag))
-                        .toList(),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'My Review: ${professor.myReview ?? "None"}',
-                    style: textTheme.labelSmall,
+                    'Courses: ${professor.courses.join(' · ')}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.labelSmall?.copyWith(fontSize: 10),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Row(
                     children: [
-                      const Icon(Icons.star, size: 14, color: Color(0xFFF5A623)),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${professor.rating.toStringAsFixed(1)} '
-                        '(${professor.reviewCount} reviews)',
-                        style: textTheme.labelSmall,
+                      Expanded(
+                        child: Text(
+                          recentReview == null
+                              ? 'Recent review'
+                              : 'Recent · ${recentReview.timestamp}',
+                          style: textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 1),
+                  if (recentReview != null)
+                    Text(
+                      'By ${recentReview.reviewerName}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.labelSmall?.copyWith(fontSize: 10),
+                    ),
+                  Text(
+                    recentReview?.comment ?? 'No reviews yet.',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.labelSmall?.copyWith(fontSize: 10),
+                  ),
+                  if (recentReview != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Form ratings',
+                      style: textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 10,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    GridView.count(
+                      crossAxisCount: 2,
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      mainAxisSpacing: 1,
+                      crossAxisSpacing: 4,
+                      childAspectRatio: 4,
+                      children: reviewCategories.map((category) {
+                        final rating =
+                            recentReview.categoryRatings[category] ?? 0;
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                category,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: textTheme.labelSmall?.copyWith(
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                            StarDisplay(
+                              rating: rating,
+                              size: 10,
+                              showValue: false,
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -98,4 +186,5 @@ class ProfessorCard extends StatelessWidget {
       ),
     );
   }
+
 }

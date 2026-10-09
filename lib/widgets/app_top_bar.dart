@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_search_bar.dart';
 
 /// The "RateMyProfessorHAU" app bar with its wordmark and a search icon
 /// action, repeated across the Course, Reviews, Profile, and Form
@@ -8,6 +9,25 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
 
   const AppTopBar({super.key, this.onSearchTap});
 
+  Future<void> _openSearch(BuildContext context) async {
+    if (onSearchTap != null) {
+      onSearchTap!();
+      return;
+    }
+
+    final selection = await showSearch<AppSearchSelection?>(
+      context: context,
+      delegate: AppSearchDelegate(),
+    );
+    if (!context.mounted || selection == null) return;
+
+    if (selection.professor case final professor?) {
+      Navigator.of(context).pushNamed('/reviews', arguments: professor);
+    } else if (selection.course case final course?) {
+      Navigator.of(context).pushNamed('/home', arguments: course);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
@@ -15,18 +35,15 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      titleSpacing: 16,
+      titleSpacing: 8,
       title: Row(
         children: [
-          Image.asset('assets/images/logo.png', height: 250, width: 250),
-          const SizedBox(width: 6),
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Roboto',
-              ),
+          Flexible(
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 36,
+              fit: BoxFit.contain,
+              alignment: Alignment.centerLeft,
             ),
           ),
         ],
@@ -41,7 +58,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             child: IconButton(
               icon: const Icon(Icons.search, color: Colors.white, size: 20),
-              onPressed: onSearchTap,
+              onPressed: () => _openSearch(context),
             ),
           ),
         ),

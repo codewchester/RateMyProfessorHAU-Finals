@@ -38,15 +38,19 @@ class AppBottomNav extends StatelessWidget {
       shape: const CircularNotchedRectangle(),
       notchMargin: 8,
       color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          navIcon(Icons.settings, AppNavDestination.settings),
-          navIcon(Icons.home, AppNavDestination.home),
-          const SizedBox(width: 40), // space for the notched FAB
-          navIcon(Icons.school, AppNavDestination.review),
-          navIcon(Icons.person, AppNavDestination.profile),
-        ],
+      padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
+      child: Transform.translate(
+        offset: const Offset(0, 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            navIcon(Icons.settings, AppNavDestination.settings),
+            navIcon(Icons.home, AppNavDestination.home),
+            const SizedBox(width: 40), // space for the notched FAB
+            navIcon(Icons.school, AppNavDestination.review),
+            navIcon(Icons.person, AppNavDestination.profile),
+          ],
+        ),
       ),
     );
   }

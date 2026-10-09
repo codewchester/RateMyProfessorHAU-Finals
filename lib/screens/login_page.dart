@@ -26,11 +26,13 @@ class _LoginPageState extends State<LoginPage> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    // TODO: once Firebase Auth is wired up, this is where
-    // signInWithEmailAndPassword gets called, and the HAU email-domain
-    // check from Proposal v2's Risks section gets enforced.
     if (email.isEmpty || password.isEmpty) {
       setState(() => _errorText = 'Please enter both your email and password.');
+      return;
+    }
+
+    if (!email.toLowerCase().endsWith('@student.hau.edu.ph')) {
+      setState(() => _errorText = 'Use your @student.hau.edu.ph email address.');
       return;
     }
 

@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'screens/course_page.dart';
 import 'screens/form_page.dart';
@@ -8,7 +10,12 @@ import 'screens/stub_pages.dart';
 import 'theme.dart';
 
 void main() {
-  runApp(const RateMyProfessorHauApp());
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => const RateMyProfessorHauApp(),
+    ),
+  );
 }
 
 class RateMyProfessorHauApp extends StatelessWidget {
@@ -20,6 +27,9 @@ class RateMyProfessorHauApp extends StatelessWidget {
       title: 'RateMyProfessorHAU',
       theme: appTheme,
       debugShowCheckedModeBanner: false,
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginPage(),

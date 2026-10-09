@@ -19,12 +19,16 @@ class ReviewsPage extends StatelessWidget {
         break;
       case AppNavDestination.home:
       case AppNavDestination.professors:
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
         break;
       case AppNavDestination.profile:
         Navigator.of(context).pushNamed('/profile');
         break;
       case AppNavDestination.review:
+        // This screen already shows the selected professor's reviews.
+        break;
+      case AppNavDestination.addReview:
+        Navigator.of(context).pushNamed('/form');
         break;
       default:
       // Fallback action for any unhandled destination
@@ -235,7 +239,7 @@ class ReviewsPage extends StatelessWidget {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: AppBottomNav(
-          current: AppNavDestination.professors,
+          current: AppNavDestination.review,
           onDestinationSelected: (d) => _handleNav(context, d),
         ),
       ),

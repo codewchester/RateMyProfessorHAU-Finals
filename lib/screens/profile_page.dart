@@ -21,13 +21,16 @@ class ProfilePage extends StatelessWidget {
         break;
       case AppNavDestination.home:
       case AppNavDestination.professors:
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
         break;
       case AppNavDestination.profile:
         // Already here.
         break;
       case AppNavDestination.review:
         Navigator.of(context).pushNamed('/reviews');
+        break;
+      case AppNavDestination.addReview:
+        Navigator.of(context).pushNamed('/form');
         break;
       default:
       // Fallback action for any unhandled destination
