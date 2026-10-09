@@ -4,7 +4,7 @@
 
 **Live demo:** Not deployed yet
 
-**Demo video:** Not recorded yet
+**Demo video:** https://drive.google.com/file/d/1PezCWLA-yDZCY8uTk3fW3pIFOyqwZklp/view?usp=sharing
 
 **Course:** Applications Development and Emerging Technologies (6ADET), Holy Angel University
 
@@ -170,7 +170,7 @@ See [`AI-USAGE.md`](AI-USAGE.md) for the usage log. It still needs the remaining
 
 - **Slides:** [RateMyProfessorHAU presentation](docs/assets/RateMyProfessorHAU_Presentation.pptx)
 - **Square image (1080 × 1080):** [RateMyProfessorHAU social image](docs/assets/RateMyProfessorHAU_Square.png)
-- **Demo video:** Not recorded yet
+- **Demo video:** https://drive.google.com/file/d/1PezCWLA-yDZCY8uTk3fW3pIFOyqwZklp/view?usp=sharing
 
 ## License
 
