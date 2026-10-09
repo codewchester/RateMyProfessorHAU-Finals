@@ -151,7 +151,7 @@ lib/
 
 ## Security checklist
 
-See the [security and privacy checklist](docs/06-security-and-privacy.md). Review it again after adding Firebase and before making the repository public.
+See the [security and privacy checklist](SECURITY-CHECKLIST.md).
 
 ## Credits
 
