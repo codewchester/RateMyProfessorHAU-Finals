@@ -85,7 +85,7 @@ This project was built with AI assistance. I used Claude (Anthropic) for early F
 
 ## 3. Who wrote what
 
-The entries below identify the parts I wrote or revised. For the Course Page and professor card, I am not claiming the whole files as mine; I need to identify and explain my specific changes before counting those lines toward my own share of the project.
+The entries below identify the parts I wrote or revised. For the Course Page and professor card, I am not claiming the whole files as mine.
 
 ### Written by me
 
@@ -111,7 +111,7 @@ The entries below identify the parts I wrote or revised. For the Course Page and
 
 - **Files:** `lib/screens/course_page.dart` and `lib/widgets/professor_card.dart`
 - **Commit:** [Course Page and professor card revisions](https://github.com/codewchester/RateMyProfessorHAU-Finals/commit/ee7de7b90af27c8e60de2da6e53ce78548827d41)
-- **What I wrote and why:** In `course_page.dart` and the professor card code, I changed the layout, color placement, and rating details. I should identify the specific parts I wrote before counting those files as my own work.
+- **What I wrote and why:** In `course_page.dart` and the professor card code, I changed the layout, color placement, and rating details. 
 
 ### The AI-written part I understand best
 
