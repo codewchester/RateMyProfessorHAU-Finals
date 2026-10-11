@@ -2,7 +2,7 @@
 
 **GitHub repository:** https://github.com/codewchester/RateMyProfessorHAU-Finals
 
-**Live demo:** Not deployed yet
+**Live demo:** https://codewchester.github.io/RateMyProfessorHAU-Finals/
 
 **Demo video:** https://drive.google.com/file/d/1PezCWLA-yDZCY8uTk3fW3pIFOyqwZklp/view?usp=sharing
 
